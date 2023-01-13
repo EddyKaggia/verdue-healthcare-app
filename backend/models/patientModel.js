@@ -49,6 +49,10 @@ const patientSchema = new Schema({
         diagnosis: {
             type: String,
             required: true
+        },
+        medication: {
+            type: String,
+            required: true
         }
 }, {timestamps: true});
 module.exports = mongoose.model('Patient', patientSchema);

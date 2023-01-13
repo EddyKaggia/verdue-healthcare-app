@@ -1,5 +1,6 @@
 const Patient = require('../models/patientModel');
 const mongoose = require('mongoose');
+const { UNSAFE_NavigationContext } = require('react-router-dom');
 
 //Get all patients
 const getPatients = async (req, res) => {
@@ -27,7 +28,7 @@ const getPatient = async (req, res) => {
 
 //Create a new patient
 const createPatient = async (req, res) => {
-    const {firstName, lastName, age, pronoun, bp, pr, rr, temp, weight, chiefComplaint, history, diagnosis} = req.body;
+    const {firstName, lastName, age, pronoun, bp, pr, rr, temp, weight, chiefComplaint, history, diagnosis, medication} = req.body;
 
     //Detect empty fields
     let emptyFields = [];
@@ -68,6 +69,9 @@ const createPatient = async (req, res) => {
     if(!diagnosis) {
         emptyFields.push('diagnosis')
     };
+    if(!medication) {
+        emptyFields.push('medication');
+    };
     if(emptyFields.length > 0) {
         return res.status(400).json({
             error: 'Please fill in the fields',
@@ -77,7 +81,9 @@ const createPatient = async (req, res) => {
 
     //add document to database
     try {
-        const patient = await Patient.create({firstName, lastName, age, pronoun, bp, pr, rr, temp, weight, chiefComplaint, history, diagnosis});
+        const patient = await Patient.create({firstName, lastName, age, pronoun, bp, pr, rr, temp, weight, chiefComplaint, history, diagnosis, medication});
+        res.status(200).json(patient);
+        // return next();
     } catch (error) {
         res.status(400).json({error: error.message});
     }
